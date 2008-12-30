@@ -14,6 +14,8 @@ from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 
+from scipy import fft, concatenate
+
 def current_datetime(request):
     now = datetime.datetime.now( )
     html = "<html><body>It's now %s.</body></html>" % now
@@ -73,8 +75,17 @@ def plot(request, n):
 
     s = map(lambda x: x[:request.session['n']], edf.samples)
 
+    def proc_fft(array):
+	array_length = len(array)
+	fft_array = fft(array)
+	c= concatenate((fft_array[array_length/2:] , fft_array[:array_length/2]))
+	return abs(c)
+
+    s = map(proc_fft, s)
+
+
     samples = []
-    for i in range(len(s)):
+    for i in range(len(s)-4):
         samples.append({"label":[edf.header["labels"][i]],
                         "data": zip(range(request.session['n']), s[i])})
 

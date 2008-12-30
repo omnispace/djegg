@@ -23,7 +23,7 @@ class EDF:
         return next_sample 
 
     def to_int(self, *args):
-        return map(lambda x: int(x), *args)
+        return map(lambda x: int(str(x)), *args)
 
     def twos_complement(self, s):
         # sample records are stored in little endian format 
@@ -47,10 +47,10 @@ class EDF:
         self.header["labels"] = [self.file.read(16).strip() for i in xrange(self.ns)]
         self.header["transducer_types"] = [self.file.read(80).strip() for i in xrange(self.ns)]
         self.header["physical_dims"] = [self.file.read(8).strip() for i in xrange(self.ns)]
-        self.header["physical_mins"] = self.to_int([self.file.read(8) for i in xrange(self.ns)])
-        self.header["physical_maxs"] = self.to_int([self.file.read(8) for i in xrange(self.ns)])
-        self.header["dig_mins"] = self.to_int([self.file.read(8) for i in xrange(self.ns)])
-        self.header["dig_maxs"] = self.to_int([self.file.read(8) for i in xrange(self.ns)])
+        self.header["physical_mins"] = [self.file.read(8) for i in xrange(self.ns)]
+        self.header["physical_maxs"] = [self.file.read(8) for i in xrange(self.ns)]
+        self.header["dig_mins"] = [self.file.read(8) for i in xrange(self.ns)]
+        self.header["dig_maxs"] = [self.file.read(8) for i in xrange(self.ns)]
         self.header["prefilterings"] = [self.file.read(80).strip() for i in xrange(self.ns)]
         self.header["nrs"] = self.to_int([self.file.read(8) for i in xrange(self.ns)])
         reserved = [self.file.read(32) for i in xrange(self.ns)]
